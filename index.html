@@ -1,0 +1,54 @@
+<html>
+<head>
+    <link rel="icon" sizes="32x32" href="https://osu.ppy.sh/images/favicon/favicon-32x32.png">
+    <link rel="icon" sizes="16x16" href="https://osu.ppy.sh/images/favicon/favicon-16x16.png">
+    <meta charset="utf-8">
+    <title>直播配置生成器</title>  
+<style>
+body{
+    background-color:#F3F5F7;
+    margin:0;
+    font-size:18px;
+    line-height: 30px;
+}
+#body{
+    width:800px;
+    margin: auto;
+    background-color:white;
+    min-height: 100vh;
+}
+input{
+    width:210px;
+    font-size:18px;
+    height:30px;
+}
+</style>
+</head>
+<body>
+<div id="body">
+    <input id="apikey">
+    <button id="export">导出直播配置 bracket.json</button>
+</div>
+<script type="text/javascript">
+const apikey=document.getElementById('apikey')
+document.getElementById('export').onclick=function(){
+    getUserID()
+}
+function getUserID(username='Pata-Mon'){
+    let xhr = new XMLHttpRequest()
+    xhr.open('get', `https://osu.ppy.sh/api/get_user?k=${apikey.value.trim()}&u=${username}&type=${apikey.value.trim()?'string':'id'}`)
+    xhr.send()
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200 || xhr.status === 304) {
+                console.log(xhr.responseText)
+            } else {
+                //error
+            }
+        }
+    }
+}
+getUserID()
+</script>
+</body>
+</html>
