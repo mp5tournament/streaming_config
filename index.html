@@ -36,7 +36,7 @@ document.getElementById('export').onclick=function(){
 }
 function getUserID(username='Pata-Mon'){
     let xhr = new XMLHttpRequest()
-    xhr.open('get', `https://osu.ppy.sh/api/get_user?k=${apikey.value.trim()}&u=${username}&type=${apikey.value.trim()?'string':'id'}`)
+    xhr.open('get', `https://mp5tournament.github.io/referee_sheet/`)
     xhr.send()
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
@@ -48,7 +48,6 @@ function getUserID(username='Pata-Mon'){
         }
     }
 }
-getUserID()
 </script>
 </body>
 </html>
