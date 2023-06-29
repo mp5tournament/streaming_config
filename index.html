@@ -269,7 +269,16 @@ function checkExport(Rounds,Teams,status){
         AutoProgressScreens: true,
         SplitMapPoolByMods: true,
     }))
-    console.log(text)
+    
+    const blob = new Blob([text], {
+        type: 'text/plain;charset=utf-8'
+    })
+    const objectURL = URL.createObjectURL(blob)
+    const aTag = document.createElement('a')
+    aTag.href = objectURL
+    aTag.download = 'bracket.json'
+    aTag.click()
+    URL.revokeObjectURL(objectURL)
 }
 
 function exportConfig(Rounds,Teams){
