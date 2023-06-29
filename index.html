@@ -212,6 +212,7 @@ function getUserID(players,i,status,retry=2){
     xhr.send()
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
+            console.log(xhr.responseText)
             try{
                 if(!xhr.responseText)throw 'blank'
                 if(xhr.responseText=='[]'){
@@ -219,6 +220,7 @@ function getUserID(players,i,status,retry=2){
                     return
                 }
                 let ans=JSON.parse(xhr.responseText)
+            console.log(ans)
                 if(ans.error){
                     status.apikey=true
                     return
