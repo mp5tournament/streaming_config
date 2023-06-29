@@ -212,7 +212,6 @@ function getUserID(players,i,status,retry=2){
     xhr.send()
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
-            console.log(xhr.responseText)
             try{
                 if(!xhr.responseText)throw 'blank'
                 if(xhr.responseText=='[]'){
@@ -220,7 +219,6 @@ function getUserID(players,i,status,retry=2){
                     return
                 }
                 let ans=JSON.parse(xhr.responseText)
-            console.log(ans)
                 if(ans.error){
                     status.apikey=true
                     return
@@ -239,7 +237,7 @@ function getUserID(players,i,status,retry=2){
 
 function checkExport(Rounds,Teams,status){
     if(status.connection){
-        alert('未能获取用户id，请检查连接并重试。若不想将用户名转化为uid，请清空apikey。')
+        alert('未能获取用户id，请确保您提供的apikey有效，并检查网络连接后重试。若不想将用户名转化为uid，请清空apikey。')
         return
     }
     if(status.apikey){
