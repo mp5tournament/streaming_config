@@ -332,7 +332,7 @@ function exportConfig(Rounds,Teams){
             Acronym:nickname,
             Players:[]
         }
-        for(j in teamLine)if(j&&teamLine[j].trim()){
+        for(j in teamLine)if(j!='0'&&teamLine[j].trim()){
             team.Players.push(teamLine[j].trim())
         }
         for(player of team.Players)isUsername=isUsername||!isInteger.test(player)
