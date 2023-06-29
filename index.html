@@ -13,37 +13,334 @@ body{
 }
 #body{
     width:800px;
+    padding:10px;
     margin: auto;
     background-color:white;
     min-height: 100vh;
 }
-input{
-    width:210px;
+h1{
+    margin-top: 10px;
+    margin-bottom: 0px;
+    float: left;
+}
+#introduction{
+    margin-top: 25px;
+    font-size:10px;
+    color:#808080;
+    padding: 0;
+    float: right;
+}
+#introduction a{
+    display:inline !important;
+    color:#808080 !important;
+}
+#introduction a:hover{
+    background-color:white !important;
+    color: #A0A0A0 !important;
+}
+td{
     font-size:18px;
+    line-height: 30px;
+    vertical-align:top;
+}
+.title{
+    font-size:22px;
+    font-weight:bold;
+    width:100px;
+}
+.comment{
+    width:691px;
+}
+input{
+    width:100px;
+    font-size:18px;
+    height:30px;
+}
+.round input{
+    width:80px !important;
+}
+.bo input{
+    width:50px !important;
+}
+textarea{
+    resize:none;
+    width:100px;
+    font-size:18px;
+    height:60px;
+    font-family: MicrosoftYaHei;
+}
+button{
+    font-size:18px;
+    width:200px;
     height:30px;
 }
 </style>
 </head>
 <body>
 <div id="body">
-    <input id="apikey">
-    <button id="export">导出直播配置 bracket.json</button>
+<div style="height:56px">
+    <h1>直播配置生成器</h1>
+    <div id="introduction">项目地址：<a href="https://github.com/mp5tournament/streaming_config" target="_blank">https://github.com/mp5tournament/streaming_config</a></div>
+</div>
+<hr style="margin-top:0">
+<table>
+    <tr>
+        <td class="title">说明</td>
+        <td class="comment">bracket.json啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button id="export">导出本页直播配置</button> <button id="mp5">导出最新MP5直播配置</button></td>
+    </tr>
+</table>
+<hr>
+<table>
+    <tr>
+        <td class="title">apikey</td>
+        <td class="comment">a</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input id="apikey" style="width:691px;" placeholder="abcdefghijklmnopqrstuvwxyz01234567890123"></td>
+    </tr>
+</table>
+<hr>
+<table>
+    <tr>
+        <td class="title">队伍配置</td>
+        <td class="comment">队伍配置说明</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><textarea id="team" style="width:691px;height: 102px;"></textarea></td>
+    </tr>
+</table>
+<hr>
+<table>
+    <tr>
+        <td class="title">图池配置</td>
+        <td class="comment">a</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><table>
+            <tr>
+                <td></td>
+                <td>➕➖</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>轮次数：</td>
+                <td>3</td>
+                <td>mod数：</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>-</td>
+                <td></td>
+                <td>-</td>
+            </tr>
+        </table></td>
+    </tr>
+</table>
+<table>
+    <tr class="round">
+        <td></td>
+        <td><input value="第一轮"></td>
+        <td><input value="第二轮"></td>
+        <td><input value="第三轮"></td>
+    </tr>
+    <tr class="bo">
+        <td></td>
+        <td>bo<input value="9"></td>
+        <td>bo<input value="11"></td>
+        <td>bo<input value="13"></td>
+    </tr>
+    <tr>
+        <td><input value="NM"></td>
+        <td><textarea placeholder="1000684
+327526"></textarea></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+    </tr>
+    <tr>
+        <td><input value="HD"></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+    </tr>
+    <tr>
+        <td><input value="HR"></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+    </tr>
+    <tr>
+        <td><input value="DT"></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+    </tr>
+    <tr>
+        <td><input value="FM"></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+    </tr>
+    <tr>
+        <td><input value="TB"></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+        <td><textarea></textarea></td>
+    </tr>
+</table>
 </div>
 <script type="text/javascript">
+const isInteger=/^-?[0-9]*$/
+document.getElementById('team').setAttribute('placeholder',
+`队名1\tusername1_1\tusername1_2\t...
+队名2\tusername2_1\tusername2_2\t...
+...
+`)
 const apikey=document.getElementById('apikey')
-document.getElementById('export').onclick=function(){
-    getUserID()
-}
-function getUserID(username='Pata-Mon'){
+
+function getUserID(players,i,status,retry=2){
     let xhr = new XMLHttpRequest()
-    xhr.open('get', `https://mp5tournament.github.io/referee_sheet/`)
+    xhr.open('get', `https://osu.ppy.sh/api/get_user?k=${apikey.value.trim()}&u=${players[i]}&type=${apikey.value.trim()?'string':'id'}`)
     xhr.send()
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200 || xhr.status === 304) {
-                console.log(xhr.responseText)
+                let ans=JSON.parse(xhr.responseText)
+                if(ans.error) status.apikey=true
+                else players[i]={id:ans[0].user_id}
             } else {
-                //error
+                if(retry)getUserID(players,i,status,retry-1)
+                else status.connection=true
+            }
+        }
+    }
+}
+
+function checkExport(Rounds,Teams,status){
+    try{
+        console.log(status)
+        if(status.connection){
+            alert('未能获取用户id，请检查连接并重试。若不想将username转化为id，请清空apikey。')
+            return
+        }
+        if(status.apikey){
+            alert('您提供的apikey无效，请检查后重试。若不想将username转化为id，请清空apikey。')
+            return
+        }
+        throw 'unfinished'
+    }catch(e){
+        setTimeout(function(){checkExport(Rounds,Teams,status)},500)
+        return
+    }
+
+    console.log(JSON.stringify(Teams))
+    let text=(JSON.stringify({
+        Ruleset: {
+            ShortName: 'osu',
+            Name: 'osu!',
+            InstantiationInfo: 'osu.Game.Rulesets.Osu.OsuRuleset, osu.Game.Rulesets.Osu',
+            LastAppliedDifficultyVersion: 20220902,
+            Available: true
+        },
+        Matches: [],
+        Rounds,
+        Teams,
+        Progressions: [],
+        AutoProgressScreens: true,
+        SplitMapPoolByMods: true,
+    }))
+    console.log(text)
+}
+
+function exportConfig(Rounds,Teams){
+    for(round of Rounds){
+        let Beatmaps=[]
+        for(mod in round.Beatmaps){
+            for(bid of round.Beatmaps[mod]){
+                if(!isInteger.test(bid.trim())){
+                    alert(`图池“${mod}”中bid“${bid}”格式错误，请检查后重试。`)
+                    return
+                }
+                Beatmaps.push({ID:parseInt(bid),Mods:mod})
+            }
+        }
+        round.Beatmaps=Beatmaps
+    }
+    let isUsername=false
+    for(i in Teams){
+        let nickname='A'
+        let teamLine=Teams[i].split('\t')
+        for(j in teamLine)teamLine[j]=teamLine[j].trim()
+        let team={
+            FullName:teamLine[0],
+            FlagName:nickname,
+            Acronym:nickname,
+            Players:teamLine.slice(1)
+        }
+        for(player of team.Players)isUsername=isUsername||!isInteger.test(player)
+        Teams[i]=team
+    }
+
+    let status={last:0,apikey:false,connection:false}
+    if(isUsername){
+        if(apikey.value.trim()){
+            function convertID(players,i,p){
+                status.last+=1
+                setTimeout(getUserID(players,i,status),p*100)
+            }
+        }else{
+            function convertID(players,i,p){
+                players[i]={Username:players[i]}
+            }
+        }
+    }else{
+        function convertID(players,i,p){
+            players[i]={id:players[i]}
+        }
+    }
+    let p=0
+    for(team of Teams) for(i in team.Players) convertID(team.Players,i,p++)
+    
+    checkExport(Rounds,Teams,status)
+}
+
+document.getElementById('export').onclick=function(){
+    let rounds={}
+    let teamData={}
+    exportConfig(rounds,teamData)
+}
+document.getElementById('mp5').onclick=function(){
+    let xhr = new XMLHttpRequest()
+    xhr.open('get', `https://mp5tournament.github.io/referee_sheet/`)
+    //xhr.setRequestHeader("Cache-Control", "no-cache")
+    xhr.send()
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200 || xhr.status === 304) {
+                const tournament={name:null,nickname:null,tbPickable:null,tbPickable:null,tbOnlyOne:null,teamPlayingSize:null,teamData:null,rounds:null,poolMod:null,poolSymbol:null}
+                eval(xhr.responseText.split('// 锦标赛设置')[1].split('\</script\>')[0])
+                let rounds=[]
+                for(roundName in tournament.rounds){
+                    let round={BestOf: 0,Beatmaps: tournament.rounds[roundName].pool}
+                    round.name=roundName
+                    round.Description=roundName
+                    for(e of tournament.rounds[roundName].events){
+                        if(e=='p')round.BestOf+=2
+                        if(e=='t')round.BestOf+=1
+                    }
+                    rounds.push(round)
+                }
+                exportConfig(rounds,tournament.teamData)
+            } else {
+                alert('获取MP5配置失败，请检查连接并重试。')
             }
         }
     }
