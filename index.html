@@ -12,7 +12,7 @@ body{
     line-height: 30px;
 }
 #body{
-    width:800px;
+    width:830px;
     padding:10px;
     margin: auto;
     background-color:white;
@@ -49,30 +49,45 @@ td{
     width:100px;
 }
 .comment{
-    width:691px;
+    font-size:14px;
 }
 input{
     width:100px;
     font-size:18px;
     height:30px;
 }
-.round input{
-    width:80px !important;
-}
 .bo input{
-    width:50px !important;
+    width:56px !important;
+    text-align: right;
+    float:right;
 }
 textarea{
     resize:none;
     width:100px;
     font-size:18px;
-    height:60px;
+    height:78px;
     font-family: MicrosoftYaHei;
 }
 button{
     font-size:18px;
     width:200px;
     height:30px;
+}
+button.number{
+    background-color: #ace;
+    font-size:12px;
+    width:24px;
+    height:24px;
+    text-align: center;
+    border-radius: 12px;
+    padding: 0;
+    margin:0 5px;
+}
+#r,#m{
+    vertical-align:middle;
+    display: inline-block;
+    text-align: center;
+    width: 22px;
 }
 </style>
 </head>
@@ -86,7 +101,9 @@ button{
 <table>
     <tr>
         <td class="title">说明</td>
-        <td class="comment">bracket.json啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</td>
+        <td class="comment"><b>本工具可以根据以下填写的信息自动生成osu!直播配置文件“bracket.json”，在按要求填写好以下信息后点击“导出本页直播配置”按钮即可。</b><br
+            >也可以不填写任何信息（或仅填写apikey），通过点击“导出最新MP5直播配置”按钮，直接获取最新的MP5杯直播配置文件。<br
+            >目前生成的配置文件不包括赛程相关配置，直播员在使用时可直接新建比赛并选择直播场次的队伍和轮次。</td>
     </tr>
     <tr>
         <td></td>
@@ -97,52 +114,43 @@ button{
 <table>
     <tr>
         <td class="title">apikey</td>
-        <td class="comment">a</td>
+        <td class="comment"><b>本项可以不填写。</b><br
+            >本项为osu!旧版api的apikey。如果你填写了本项，生成的直播配置文件中选手的用户名会被自动转化为uid。<br
+            >若你在队伍信息中即使用了uid，或是你不介意生成的配置文件中没有选手uid，则可不填写此项。配置文件中选手没有uid仅有用户名时，选手头像等内容将无法在直播中正确显示，但对于一般使用没有影响。<br
+            >请<a href="https://osu.ppy.sh/home/account/edit#legacy-api" target="_blank">点击此处</a>并下滑至页面底部“Legacy API”处获取旧版apikey。</td>
     </tr>
     <tr>
         <td></td>
-        <td><input id="apikey" style="width:691px;" placeholder="abcdefghijklmnopqrstuvwxyz01234567890123"></td>
+        <td><input id="apikey" style="width:100%;" placeholder="abcdefghijklmnopqrstuvwxyz01234567890123"></td>
     </tr>
 </table>
 <hr>
 <table>
     <tr>
-        <td class="title">队伍配置</td>
-        <td class="comment">队伍配置说明</td>
+        <td class="title">队伍信息</td>
+        <td class="comment">请将队名和队员的用户名或uid复制至此处。<br
+            >以下每行表示一个队，每行中第一项为队名，之后为队员。每项之间使用制表符（tab，"\t"）分隔。这意味着<b>一般来说你从比赛的主表格中直接复制队伍信息至此处即可。</b><br
+            >队员可以使用用户名（username）也可以使用uid，但需统一，即如果你使用用户名，则全部选手均应为用户名，反之亦然。</td>
     </tr>
     <tr>
         <td></td>
-        <td><textarea id="team" style="width:691px;height: 102px;"></textarea></td>
+        <td><textarea id="team" style="width:100%;height: 102px;"></textarea></td>
     </tr>
 </table>
 <hr>
 <table>
     <tr>
-        <td class="title">图池配置</td>
-        <td class="comment">a</td>
+        <td class="title">图池信息</td>
+        <td class="comment">请在此处填写图池信息。<br
+            >在表格上方点击按钮增减轮次或图池中不同Mod池的数量。<br
+            >在表格中填写图池的具体信息，每列代表一轮图池，每行代表一种Mod。在上方的表头处你可以修改轮次的名称和bo数，在左方的表头处你可以修改Mod池的名称。表格中间的部分请填写相应轮次和Mod池中图的bid，每行一张图。</td>
     </tr>
     <tr>
         <td></td>
-        <td><table>
-            <tr>
-                <td></td>
-                <td>➕➖</td>
-                <td></td>
-                <td>+</td>
-            </tr>
-            <tr>
-                <td>轮次数：</td>
-                <td>3</td>
-                <td>mod数：</td>
-                <td>6</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>-</td>
-                <td></td>
-                <td>-</td>
-            </tr>
-        </table></td>
+        <td>
+            轮次数：<button class="number" onclick="changeTable(0,0)">➖</button><span id="r">3</span><button class="number" onclick="changeTable(0,1)" style="margin-right: 30px;">➕</button>
+            Mod数：<button class="number" onclick="changeTable(1,0)">➖</button><span id="r">6</span><button class="number" onclick="changeTable(1,1)">➕</button>
+        </td>
     </tr>
 </table>
 <table>
@@ -154,9 +162,9 @@ button{
     </tr>
     <tr class="bo">
         <td></td>
-        <td>bo<input value="9"></td>
-        <td>bo<input value="11"></td>
-        <td>bo<input value="13"></td>
+        <td>bo<input value="9" type="number" min="1"></td>
+        <td>bo<input value="11" type="number" min="1"></td>
+        <td>bo<input value="13" type="number" min="1"></td>
     </tr>
     <tr>
         <td><input value="NM"></td>
@@ -253,7 +261,6 @@ function checkExport(Rounds,Teams,status){
         return
     }
 
-    console.log(JSON.stringify(Teams))
     let text=(JSON.stringify({
         Ruleset: {
             ShortName: 'osu',
@@ -269,6 +276,9 @@ function checkExport(Rounds,Teams,status){
         AutoProgressScreens: true,
         SplitMapPoolByMods: true,
     }))
+
+    //console.log(text)
+    //return
     
     const blob = new Blob([text], {
         type: 'text/plain;charset=utf-8'
@@ -296,15 +306,34 @@ function exportConfig(Rounds,Teams){
         round.Beatmaps=Beatmaps
     }
     let isUsername=false
+    let order=[0]
+    let l=1
     for(i in Teams){
-        let nickname='A'
+        let nickname=''
+        for(o of order){
+            nickname=String.fromCharCode(65+o)+nickname
+        }
+
+        try{
+            for(j=0;j<=l;j++){
+                if(j==l)throw 'overflow'
+                order[j]++
+                if(order[j]==26)order[j]=0
+                else break
+            }
+        }catch(e){
+            order.push(0)
+            l++
+        }
         let teamLine=Teams[i].split('\t')
-        for(j in teamLine)teamLine[j]=teamLine[j].trim()
         let team={
-            FullName:teamLine[0],
+            FullName:teamLine[0].trim(),
             FlagName:nickname,
             Acronym:nickname,
-            Players:teamLine.slice(1)
+            Players:[]
+        }
+        for(j in teamLine)if(j&&teamLine[j].trim()){
+            team.Players.push(teamLine[j].trim())
         }
         for(player of team.Players)isUsername=isUsername||!isInteger.test(player)
         Teams[i]=team
@@ -334,8 +363,11 @@ function exportConfig(Rounds,Teams){
 }
 
 document.getElementById('export').onclick=function(){
-    let rounds={}
-    let teamData={}
+    let rounds=[]
+    let teamData=document.getElementById('team').value.trim().split('\n')
+
+    console.log(rounds)
+    console.log(teamData)
     exportConfig(rounds,teamData)
 }
 document.getElementById('mp5').onclick=function(){
@@ -345,9 +377,9 @@ document.getElementById('mp5').onclick=function(){
     xhr.send()
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
-            if (xhr.status === 200 || xhr.status === 304) {
+            if (xhr.status>=200&&xhr.status<400) {
                 const tournament={name:null,nickname:null,tbPickable:null,tbPickable:null,tbOnlyOne:null,teamPlayingSize:null,teamData:null,rounds:null,poolMod:null,poolSymbol:null}
-                eval(xhr.responseText.split('// 锦标赛设置')[1].split('\</script\>')[0])
+                eval(xhr.responseText.split('// 锦标赛设置')[1].split('<\/script>')[0])
                 let rounds=[]
                 for(roundName in tournament.rounds){
                     let round={BestOf: 0,Beatmaps: tournament.rounds[roundName].pool}
@@ -363,6 +395,22 @@ document.getElementById('mp5').onclick=function(){
             } else {
                 alert('获取MP5配置失败，请检查连接并重试。')
             }
+        }
+    }
+}
+
+function changeTable(isMod,add) {
+    if(isMod){
+        if(add){
+
+        }else{
+
+        }
+    }else{
+        if(add){
+
+        }else{
+            
         }
     }
 }
