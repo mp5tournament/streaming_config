@@ -24,7 +24,8 @@ h1{
     float: left;
 }
 #introduction{
-    margin-top: 25px;
+    margin-top: 50px;
+    line-height: 10px;
     font-size:10px;
     color:#808080;
     padding: 0;
@@ -50,6 +51,7 @@ td{
 }
 .comment{
     font-size:14px;
+    color: #558;
 }
 input{
     width:100px;
@@ -68,10 +70,11 @@ textarea{
     height:78px;
     font-family: MicrosoftYaHei;
 }
-button{
+#export,#mp5{
     font-size:18px;
     width:200px;
     height:30px;
+    border-radius: 5px;
 }
 button.number{
     background-color: #ace;
@@ -93,7 +96,7 @@ button.number{
 </head>
 <body>
 <div id="body">
-<div style="height:56px">
+<div style="height:65px">
     <h1>直播配置生成器</h1>
     <div id="introduction">项目地址：<a href="https://github.com/mp5tournament/streaming_config" target="_blank">https://github.com/mp5tournament/streaming_config</a></div>
 </div>
@@ -107,7 +110,7 @@ button.number{
     </tr>
     <tr>
         <td></td>
-        <td><button id="export">导出本页直播配置</button> <button id="mp5">导出最新MP5直播配置</button></td>
+        <td><button id="export" style="background-color:#FEC">导出本页直播配置</button> <button id="mp5" style="background-color:#FCD">导出最新MP5直播配置</button></td>
     </tr>
 </table>
 <hr>
@@ -117,7 +120,7 @@ button.number{
         <td class="comment"><b>本项可以不填写。</b><br
             >本项为osu!旧版api的apikey。如果你填写了本项，生成的直播配置文件中选手的用户名会被自动转化为uid。<br
             >若你在队伍信息中即使用了uid，或是你不介意生成的配置文件中没有选手uid，则可不填写此项。配置文件中选手没有uid仅有用户名时，选手头像等内容将无法在直播中正确显示，但对于一般使用没有影响。<br
-            >请<a href="https://osu.ppy.sh/home/account/edit#legacy-api" target="_blank">点击此处</a>并下滑至页面底部“Legacy API”处获取旧版apikey。</td>
+            >请<a href="https://osu.ppy.sh/home/account/edit#legacy-api" target="_blank">点击此处</a>并下滑至页面底部“Legacy API”处获取旧版apikey，它应当是一个仅包含小写字母和数字的字符串。</td>
     </tr>
     <tr>
         <td></td>
@@ -148,12 +151,12 @@ button.number{
     <tr>
         <td></td>
         <td>
-            轮次数：<button class="number" onclick="changeTable(0,0)">➖</button><span id="r">3</span><button class="number" onclick="changeTable(0,1)" style="margin-right: 30px;">➕</button>
-            Mod数：<button class="number" onclick="changeTable(1,0)">➖</button><span id="r">6</span><button class="number" onclick="changeTable(1,1)">➕</button>
+            轮次数：<button class="number" onclick="changeTable(1,0)">➖</button><span id="r">3</span><button class="number" onclick="changeTable(1,1)" style="margin-right: 30px;">➕</button>
+            Mod数：<button class="number" onclick="changeTable(0,0)">➖</button><span id="m">6</span><button class="number" onclick="changeTable(0,1)">➕</button>
         </td>
     </tr>
 </table>
-<table>
+<table id="pool">
     <tr class="round">
         <td></td>
         <td><input value="第一轮"></td>
@@ -213,6 +216,7 @@ document.getElementById('team').setAttribute('placeholder',
 ...
 `)
 const apikey=document.getElementById('apikey')
+const pool=document.getElementById('pool').getElementsByTagName('tr')[0].parentNode
 
 function getUserID(players,i,status,retry=2){
     let xhr = new XMLHttpRequest()
@@ -236,7 +240,7 @@ function getUserID(players,i,status,retry=2){
                     status.last-=1
                     return
                 }
-            }catch(e){}
+            }catch{}
             if(retry)getUserID(players,i,status,retry-1)
             else status.connection=true
         }
@@ -276,9 +280,6 @@ function checkExport(Rounds,Teams,status){
         AutoProgressScreens: true,
         SplitMapPoolByMods: true,
     }))
-
-    //console.log(text)
-    //return
     
     const blob = new Blob([text], {
         type: 'text/plain;charset=utf-8'
@@ -292,10 +293,10 @@ function checkExport(Rounds,Teams,status){
 }
 
 function exportConfig(Rounds,Teams){
-    for(round of Rounds){
+    for(let round of Rounds){
         let Beatmaps=[]
-        for(mod in round.Beatmaps){
-            for(bid of round.Beatmaps[mod]){
+        for(let mod in round.Beatmaps){
+            for(let bid of round.Beatmaps[mod]){
                 if(!isInteger.test(bid.trim())){
                     alert(`图池“${mod}”中bid“${bid}”格式错误，请检查后重试。`)
                     return
@@ -308,20 +309,20 @@ function exportConfig(Rounds,Teams){
     let isUsername=false
     let order=[0]
     let l=1
-    for(i in Teams){
+    for(let i in Teams){
         let nickname=''
-        for(o of order){
+        for(let o of order){
             nickname=String.fromCharCode(65+o)+nickname
         }
 
         try{
-            for(j=0;j<=l;j++){
+            for(let j=0;j<=l;j++){
                 if(j==l)throw 'overflow'
                 order[j]++
                 if(order[j]==26)order[j]=0
                 else break
             }
-        }catch(e){
+        }catch{
             order.push(0)
             l++
         }
@@ -332,10 +333,10 @@ function exportConfig(Rounds,Teams){
             Acronym:nickname,
             Players:[]
         }
-        for(j in teamLine)if(j!='0'&&teamLine[j].trim()){
+        for(let j in teamLine)if(j!='0'&&teamLine[j].trim()){
             team.Players.push(teamLine[j].trim())
         }
-        for(player of team.Players)isUsername=isUsername||!isInteger.test(player)
+        for(let player of team.Players)isUsername=isUsername||!isInteger.test(player)
         Teams[i]=team
     }
 
@@ -357,17 +358,54 @@ function exportConfig(Rounds,Teams){
         }
     }
     let p=0
-    for(team of Teams) for(i in team.Players) convertID(team.Players,i,p++)
+    for(let team of Teams) for(let i in team.Players) convertID(team.Players,i,p++)
     
     checkExport(Rounds,Teams,status)
 }
 
 document.getElementById('export').onclick=function(){
-    let rounds=[]
     let teamData=document.getElementById('team').value.trim().split('\n')
-
-    console.log(rounds)
-    console.log(teamData)
+    let rounds=[]
+    for(let tr of pool.getElementsByTagName('tr')){
+        if(tr.classList.contains('round')){
+            for(let input of tr.getElementsByTagName('input')){
+                let name=input.value.trim()
+                if(!name){
+                    alert('轮次名称不能为空，请检查后重试。')
+                    return
+                }
+                let round={name,Description:name,Beatmaps:{}}
+                rounds.push(round)
+            }
+        }else if(tr.classList.contains('bo')){
+            let i=0
+            for(let input of tr.getElementsByTagName('input')){
+                let bo=Number(input.value)
+                if(bo%1){
+                    alert('bo数不能为小数，请检查后重试。')
+                    return
+                }
+                if(bo<=0){
+                    alert('bo数必须为正数，请检查后重试。')
+                    return
+                }
+                rounds[i].BestOf=bo
+                i++
+            }
+        }else{
+            let mod=tr.getElementsByTagName('input')[0].value.trim()
+            if(!mod){
+                alert('Mod名称不能为空，请检查后重试。')
+                return
+            }
+            let i=0
+            for(let textarea of tr.getElementsByTagName('textarea')){
+                let bidText=textarea.value.trim()
+                if(bidText)rounds[i].Beatmaps[mod]=bidText.split('\n')
+                i++
+            }
+        }
+    }
     exportConfig(rounds,teamData)
 }
 document.getElementById('mp5').onclick=function(){
@@ -381,11 +419,11 @@ document.getElementById('mp5').onclick=function(){
                 const tournament={name:null,nickname:null,tbPickable:null,tbPickable:null,tbOnlyOne:null,teamPlayingSize:null,teamData:null,rounds:null,poolMod:null,poolSymbol:null}
                 eval(xhr.responseText.split('// 锦标赛设置')[1].split('<\/script>')[0])
                 let rounds=[]
-                for(roundName in tournament.rounds){
+                for(let roundName in tournament.rounds){
                     let round={BestOf: 0,Beatmaps: tournament.rounds[roundName].pool}
                     round.name=roundName
                     round.Description=roundName
-                    for(e of tournament.rounds[roundName].events){
+                    for(let e of tournament.rounds[roundName].events){
                         if(e=='p')round.BestOf+=2
                         if(e=='t')round.BestOf+=1
                     }
@@ -399,18 +437,46 @@ document.getElementById('mp5').onclick=function(){
     }
 }
 
-function changeTable(isMod,add) {
-    if(isMod){
+const chinese=['','一','二','三','四','五','六','七','八','九']
+function toChinese(r){
+    if(r<10) return chinese[r]
+    if(r<20) return '十'+chinese[r%10]
+    if(r<100) return chinese[(r-r%10)/10]+'十'+chinese[r%10]
+    if(r==100) return '一百'
+    return r
+}
+
+let r=3
+let m=6
+const trc=pool.getElementsByTagName('tr')[3].cloneNode(true)
+trc.getElementsByTagName('input')[0].value=''
+function changeTable(isRound,add) {
+    if(isRound){
         if(add){
-
+            document.getElementById('r').textContent=++r
+            for(let tr of pool.getElementsByTagName('tr')){
+                tr.appendChild(tr.lastElementChild.cloneNode(true))
+                if(tr.classList.contains('round'))tr.lastElementChild.getElementsByTagName('input')[0].value=`第${toChinese(r)}轮`
+                else try{
+                    tr.lastElementChild.getElementsByTagName('textarea')[0].value=''
+                    tr.lastElementChild.getElementsByTagName('textarea')[0].removeAttribute('placeholder')
+                }catch{}
+            }
         }else{
-
+            if(r<=1)return
+            document.getElementById('r').textContent=--r
+            for(let tr of pool.getElementsByTagName('tr')){
+                tr.removeChild(tr.lastElementChild)
+            }
         }
     }else{
         if(add){
-
+            document.getElementById('m').textContent=++m
+            pool.appendChild(trc.cloneNode(true))
         }else{
-            
+            if(m<=1)return
+            document.getElementById('m').textContent=--m
+            pool.removeChild(pool.lastElementChild)
         }
     }
 }
