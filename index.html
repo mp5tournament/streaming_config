@@ -212,31 +212,43 @@ function getUserID(players,i,status,retry=2){
     xhr.send()
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
-            if (xhr.status === 200 || xhr.status === 304) {
+            try{
+                if(!xhr.responseText)throw 'blank'
+                if(xhr.responseText=='[]'){
+                    status.noUser=players[i]
+                    return
+                }
                 let ans=JSON.parse(xhr.responseText)
-                if(ans.error) status.apikey=true
-                else players[i]={id:ans[0].user_id}
-            } else {
-                if(retry)getUserID(players,i,status,retry-1)
-                else status.connection=true
-            }
+                if(ans.error){
+                    status.apikey=true
+                    return
+                }
+                if(ans[0].user_id){
+                    players[i]={id:ans[0].user_id}
+                    status.last-=1
+                    return
+                }
+            }catch(e){}
+            if(retry)getUserID(players,i,status,retry-1)
+            else status.connection=true
         }
     }
 }
 
 function checkExport(Rounds,Teams,status){
-    try{
-        console.log(status)
-        if(status.connection){
-            alert('未能获取用户id，请检查连接并重试。若不想将username转化为id，请清空apikey。')
-            return
-        }
-        if(status.apikey){
-            alert('您提供的apikey无效，请检查后重试。若不想将username转化为id，请清空apikey。')
-            return
-        }
-        throw 'unfinished'
-    }catch(e){
+    if(status.connection){
+        alert('未能获取用户id，请检查连接并重试。若不想将用户名转化为uid，请清空apikey。')
+        return
+    }
+    if(status.apikey){
+        alert('您提供的apikey无效，请检查后重试。若不想将用户名转化为uid，请清空apikey。')
+        return
+    }
+    if(status.noUser){
+        alert(`没有在osu中查找到您提供的用户名“${status.noUser}”，请检查后重试。若不想将用户名转化为uid，请清空apikey。`)
+        return
+    }
+    if(status.last){
         setTimeout(function(){checkExport(Rounds,Teams,status)},500)
         return
     }
@@ -289,7 +301,7 @@ function exportConfig(Rounds,Teams){
         Teams[i]=team
     }
 
-    let status={last:0,apikey:false,connection:false}
+    let status={last:0}
     if(isUsername){
         if(apikey.value.trim()){
             function convertID(players,i,p){
