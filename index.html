@@ -51,7 +51,7 @@ td{
 }
 .comment{
     font-size:14px;
-    color: #558;
+    color: #55a;
 }
 input{
     width:100px;
@@ -77,7 +77,7 @@ textarea{
     border-radius: 5px;
 }
 button.number{
-    background-color: #ace;
+    background-color: #bcf;
     font-size:12px;
     width:24px;
     height:24px;
@@ -146,7 +146,7 @@ button.number{
         <td class="title">图池信息</td>
         <td class="comment">请在此处填写图池信息。<br
             >在表格上方点击按钮增减轮次或图池中不同Mod池的数量。<br
-            >在表格中填写图池的具体信息，每列代表一轮图池，每行代表一种Mod。在上方的表头处你可以修改轮次的名称和bo数，在左方的表头处你可以修改Mod池的名称。表格中间的部分请填写相应轮次和Mod池中图的bid，每行一张图。</td>
+            >在表格中填写图池的具体信息，每列代表一轮图池，每行代表一种Mod。在上方的表头处你可以修改轮次的名称和bo数，在左方的表头处你可以修改Mod池的名称。表格中间的部分请填写相应轮次和Mod池中图的BID，每行一张图。</td>
     </tr>
     <tr>
         <td></td>
@@ -171,20 +171,23 @@ button.number{
     </tr>
     <tr>
         <td><input value="NM"></td>
-        <td><textarea placeholder="1000684
-327526"></textarea></td>
+        <td><textarea placeholder="NM1的BID
+NM2的BID
+…"></textarea></td>
         <td><textarea></textarea></td>
         <td><textarea></textarea></td>
     </tr>
     <tr>
         <td><input value="HD"></td>
-        <td><textarea></textarea></td>
+        <td><textarea placeholder="HD1的BID
+HD2的BID
+…"></textarea></td>
         <td><textarea></textarea></td>
         <td><textarea></textarea></td>
     </tr>
     <tr>
         <td><input value="HR"></td>
-        <td><textarea></textarea></td>
+        <td><textarea placeholder="…"></textarea></td>
         <td><textarea></textarea></td>
         <td><textarea></textarea></td>
     </tr>
@@ -202,7 +205,7 @@ button.number{
     </tr>
     <tr>
         <td><input value="TB"></td>
-        <td><textarea></textarea></td>
+        <td><textarea placeholder="1000684"></textarea></td>
         <td><textarea></textarea></td>
         <td><textarea></textarea></td>
     </tr>
@@ -211,9 +214,9 @@ button.number{
 <script type="text/javascript">
 const isInteger=/^-?[0-9]*$/
 document.getElementById('team').setAttribute('placeholder',
-`队名1\tusername1_1\tusername1_2\t...
-队名2\tusername2_1\tusername2_2\t...
-...
+`队名1\tusername1_1\tusername1_2\t…
+队名2\tusername2_1\tusername2_2\t…
+…
 `)
 const apikey=document.getElementById('apikey')
 const pool=document.getElementById('pool').getElementsByTagName('tr')[0].parentNode
@@ -448,31 +451,37 @@ function toChinese(r){
 
 let r=3
 let m=6
-const trc=pool.getElementsByTagName('tr')[3].cloneNode(true)
-trc.getElementsByTagName('input')[0].value=''
+const _TR=pool.getElementsByTagName('tr')[5].cloneNode(true)
+_TR.getElementsByTagName('input')[0].value=''
+const _TD=_TR.getElementsByTagName('td')[1].cloneNode(true)
+const _TD0=pool.getElementsByTagName('tr')[0].getElementsByTagName('td')[1].cloneNode(true)
 function changeTable(isRound,add) {
     if(isRound){
         if(add){
             document.getElementById('r').textContent=++r
             for(let tr of pool.getElementsByTagName('tr')){
-                tr.appendChild(tr.lastElementChild.cloneNode(true))
-                if(tr.classList.contains('round'))tr.lastElementChild.getElementsByTagName('input')[0].value=`第${toChinese(r)}轮`
-                else try{
-                    tr.lastElementChild.getElementsByTagName('textarea')[0].value=''
-                    tr.lastElementChild.getElementsByTagName('textarea')[0].removeAttribute('placeholder')
-                }catch{}
+                if(tr.classList.contains('round')){
+                    _TD0.getElementsByTagName('input')[0].value=`第${toChinese(r)}轮`
+                    tr.appendChild(_TD0.cloneNode(true))
+                }else if(tr.classList.contains('bo')){
+                    tr.appendChild(tr.lastElementChild.cloneNode(true))
+                }else{
+                    tr.appendChild(_TD.cloneNode(true))
+                }
             }
+            _TR.appendChild(_TD.cloneNode(true))
         }else{
             if(r<=1)return
             document.getElementById('r').textContent=--r
             for(let tr of pool.getElementsByTagName('tr')){
                 tr.removeChild(tr.lastElementChild)
             }
+            _TR.removeChild(_TR.lastElementChild)
         }
     }else{
         if(add){
             document.getElementById('m').textContent=++m
-            pool.appendChild(trc.cloneNode(true))
+            pool.appendChild(_TR.cloneNode(true))
         }else{
             if(m<=1)return
             document.getElementById('m').textContent=--m
