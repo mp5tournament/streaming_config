@@ -8,8 +8,8 @@
 
 |代码仓库|在线发布版|
 |-|-|
-|[📦裁判表](https://mp5tournament.github.io/referee_sheet/)|[✅裁判表](https://mp5tournament.github.io/referee_sheet/)|
-|[📦直播配置生成器](https://mp5tournament.github.io/streaming_config/)|[✅直播配置生成器](https://mp5tournament.github.io/streaming_config/)|
+|[📦裁判表](https://github.com/mp5tournament/referee_sheet)|[✅裁判表](https://mp5tournament.github.io/referee_sheet/)|
+|[📦直播配置生成器](https://github.com/mp5tournament/streaming_config)|[✅直播配置生成器](https://mp5tournament.github.io/streaming_config/)|
 
 
 ## 📄使用方法
