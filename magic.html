@@ -1,0 +1,129 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>魔法计算器</title>
+<style>
+body{
+    background-color:#F3F5F7;
+}
+.body{
+    width:750px;
+    margin:auto;
+}
+.comments{
+    margin-top:10px;
+    margin-bottom:10px;
+    color:#A0A0A0;
+}
+table{
+    background-color:white;
+}
+.title{
+    background-color:#CCCCFF;
+}
+td{
+    font-size:18px;
+    max-width:150px;
+    min-width:150px;
+    height:50px;
+    text-align:center;
+    padding:5px;
+}
+.copyable{
+    text-align:left;
+}
+input{
+    width:100px;
+    font-size:18px;
+    height:30px;
+}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+}
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+a{
+    font-size:12px;
+    float:right;
+    margin-top:6px;
+    color:#A0A0A0;
+    text-decoration:none;
+}
+</style>
+</head>
+<body>
+<div class="body">
+<div class="comments">*此工具用来将前两个魔法结束后的房内roll点转化为后续魔法所对应的编号序列。</div>
+<table cellspacing="0">
+    <tr class="title"><td>轮次</td><td>前两个魔法</td><td>roll点命令</td><td>roll点结果</td><td>魔法编号序列</td></tr>
+    <tr id="1"><td>第一轮</td><td><input type="text" maxlength="2"></td><td class="copyable">!roll 56</td><td><input type="number" max="1680" min="1"></td><td class="copyable"><span class="output">…</span></td></tr>
+    <tr id="2" style="background-color:#F4F4FF"><td>第二轮</td><td><input type="text" maxlength="2"></td><td class="copyable">!roll 336</td><td><input type="number" max="1680" min="1"></td><td class="copyable"><span class="output">…</span></td></tr>
+    <tr id="3"><td>第三轮</td><td><input type="text" maxlength="2"></td><td class="copyable">!roll 1680</td><td><input type="number" max="1680" min="1"></td><td class="copyable"><span class="output">…</span></td></tr>
+</table>
+</div>
+<script type="text/javascript">
+function copyText(){
+    const input = document.createElement('textarea')
+    document.body.appendChild(input)
+    input.innerHTML = this.parentNode.firstChild.textContent
+    input.select()
+    document.execCommand('Copy')
+    document.body.removeChild(input)
+}
+
+function check(x){
+    if (x.getAttribute('type')=='number') {
+        x.value=x.value.replace(/[^0-9]/g,'')
+    } else {
+        x.value=x.value.replace(/[^a-jA-J]/g,'')
+    }
+}
+
+const magicList='ABCDEFGHIJ'
+function getMagic(magic,roll,n){
+    var x=10-magic.length
+    var i=roll%x
+    roll=(roll-i)/x
+    for (a of 'ABCDEFGHIJ') if (!magic.includes(a)) {
+        if (i) i--
+        else{
+            magic+=a
+            break
+        }
+    }
+    if (n) return getMagic(magic,roll,n-1)
+    if (roll) return '错误'
+    return magic
+}
+
+function reCalculate(){
+    check(this)
+    var tr=this.parentNode.parentNode
+    var round=Number(tr.getAttribute('id'))
+    var magic=tr.getElementsByTagName('input')[0].value.toUpperCase()
+    var roll=tr.getElementsByTagName('input')[1].value
+    var ans='…'
+    if (magic.length==2 && roll.length){
+        roll=Number(roll)
+        if(magic[0]==magic[1]) ans='魔法错误'
+        else if(roll<=0) ans='数字错误'
+        else ans=getMagic(magic,roll-1,round)
+    }
+    tr.getElementsByClassName('output')[0].textContent=ans
+}
+
+for (x of document.getElementsByClassName('copyable')) {
+    y=document.createElement('a')
+    y.textContent='点击复制'
+    y.setAttribute('href','javascript:void(0)')
+    y.onclick=copyText
+    x.appendChild(y)
+}
+
+for (x of document.getElementsByTagName('input')) {
+    x.oninput=reCalculate
+}
+</script>
+</body>
+</html>
