@@ -415,7 +415,7 @@ document.getElementById('export').onclick=function(){
 document.getElementById('mp5').onclick=function(){
     let xhr = new XMLHttpRequest()
     xhr.open('get', `https://mp5tournament.github.io/referee_sheet/`)
-    //xhr.setRequestHeader("Cache-Control", "no-cache")
+    xhr.setRequestHeader("Cache-Control", "no-cache")
     xhr.send()
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
