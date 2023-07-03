@@ -349,7 +349,7 @@ function exportConfig(Rounds,Teams){
         if(apikey.value.trim()){
             function convertID(players,i,p){
                 status.last+=1
-                setTimeout(getUserID(players,i,status),p*100)
+                setTimeout(function(){getUserID(players,i,status)},p*100)
             }
         }else{
             function convertID(players,i,p){
