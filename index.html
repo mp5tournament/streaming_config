@@ -125,7 +125,8 @@ button.number{
     </tr>
     <tr>
         <td></td>
-        <td><input id="apikey" style="width:100%;" placeholder="abcdefghijklmnopqrstuvwxyz01234567890123"></td>
+        <td style="width:570px"><input id="apikey" style="width:100%;" placeholder="abcdefghijklmnopqrstuvwxyz01234567890123"></td>
+        <td><input id="remember" type="checkbox" style="margin-left:20px;height:20px;width:20px;vertical-align:text-bottom;">记住apikey</td>
     </tr>
 </table>
 <hr>
@@ -220,7 +221,20 @@ document.getElementById('team').setAttribute('placeholder',
 …
 `)
 const apikey=document.getElementById('apikey')
+const remember=document.getElementById('remember')
 const pool=document.getElementById('pool').getElementsByTagName('tr')[0].parentNode
+
+if(localStorage.getItem('apikey')) apikey.value=localStorage.getItem('apikey')
+if(Boolean(localStorage.getItem('remember'))) remember.checked=true
+remember.onchange=function(){
+    if(remember.checked){
+        localStorage.setItem('remember',1)
+        localStorage.setItem('apikey',apikey.value.trim())
+    }else{
+        localStorage.removeItem('remember')
+        localStorage.removeItem('apikey')
+    }
+}
 
 function getUserID(players,i,status,retry=2){
     let xhr = new XMLHttpRequest()
