@@ -226,7 +226,7 @@ const pool=document.getElementById('pool').getElementsByTagName('tr')[0].parentN
 
 if(localStorage.getItem('apikey')) apikey.value=localStorage.getItem('apikey')
 if(Boolean(localStorage.getItem('remember'))) remember.checked=true
-remember.onchange=function(){
+function saveApikey(){
     if(remember.checked){
         localStorage.setItem('remember',1)
         localStorage.setItem('apikey',apikey.value.trim())
@@ -235,6 +235,7 @@ remember.onchange=function(){
         localStorage.removeItem('apikey')
     }
 }
+remember.onchange=saveApikey
 
 function getUserID(players,i,status,retry=2){
     let xhr = new XMLHttpRequest()
@@ -382,6 +383,7 @@ function exportConfig(Rounds,Teams){
 }
 
 document.getElementById('export').onclick=function(){
+    saveApikey()
     let teamData=document.getElementById('team').value.trim().split('\n')
     let rounds=[]
     for(let tr of pool.getElementsByTagName('tr')){
@@ -427,6 +429,7 @@ document.getElementById('export').onclick=function(){
     exportConfig(rounds,teamData)
 }
 document.getElementById('mp5').onclick=function(){
+    saveApikey()
     let xhr = new XMLHttpRequest()
     xhr.open('get', `https://mp5tournament.github.io/referee_sheet/`)
     xhr.setRequestHeader("Cache-Control", "no-cache")
