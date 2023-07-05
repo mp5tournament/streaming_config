@@ -249,7 +249,7 @@ const remember=document.getElementById('remember')
 const pool=document.getElementById('pool').getElementsByTagName('tr')[0].parentNode
 
 if(localStorage.getItem('apikey')) apikey.value=localStorage.getItem('apikey')
-if(Boolean(localStorage.getItem('remember'))) remember.checked=true
+if(localStorage.getItem('remember')) remember.checked=true
 function saveApikey(){
     if(remember.checked){
         localStorage.setItem('remember',1)
@@ -260,6 +260,7 @@ function saveApikey(){
     }
 }
 remember.onchange=saveApikey
+apikey.onchange=saveApikey
 
 function getUserID(players,i,status,retry=2){
     let xhr = new XMLHttpRequest()
