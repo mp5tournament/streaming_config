@@ -285,7 +285,7 @@ function getUserID(players,i,status,retry=2){
                     return
                 }
             }catch{}
-            if(retry)getUserID(players,i,status,retry-1)
+            if(retry)setTimeout(function(){getUserID(players,i,status,retry-1)}, 2000)
             else status.connection=true
         }
     }
