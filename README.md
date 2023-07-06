@@ -10,6 +10,7 @@
 |-|-|
 |[📦裁判表](https://github.com/mp5tournament/referee_sheet)|[✅裁判表](https://mp5tournament.github.io/referee_sheet/)|
 |[📦直播配置生成器](https://github.com/mp5tournament/streaming_config)|[✅直播配置生成器](https://mp5tournament.github.io/streaming_config/)|
+|[📦图池表生成器](https://github.com/mp5tournament/map_pool_sheet)|[✅图池表生成器](https://mp5tournament.github.io/map_pool_sheet/)|
 
 
 ## 📄使用方法
