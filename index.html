@@ -10,6 +10,7 @@ body{
     margin:0;
     font-size:18px;
     line-height: 30px;
+    overflow-x: hidden;
 }
 #body{
     width:830px;
@@ -120,6 +121,7 @@ textarea::placeholder,input::placeholder{
 </style>
 </head>
 <body>
+<div style="width: 100vw;">
 <div id="body">
 <div style="height:75px">
     <h1>直播配置生成器</h1>
@@ -236,6 +238,7 @@ HD2的BID
         <td><textarea></textarea></td>
     </tr>
 </table>
+</div>
 </div>
 <script type="text/javascript">
 const isInteger=/^-?[0-9]+$/
